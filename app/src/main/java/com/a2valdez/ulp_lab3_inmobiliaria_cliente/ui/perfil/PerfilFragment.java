@@ -49,21 +49,39 @@ public class PerfilFragment extends Fragment {
                 binding.ivPerfilAvatar.setImageResource(propietario.getAvatar());
             }
         });
+        mv.getMEsEditable().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean esEditable) {
+                binding.etPerfilDni.setEnabled(esEditable);
+                binding.etPerfilApellido.setEnabled(esEditable);
+                binding.etPerfilNombre.setEnabled(esEditable);
+                binding.etPerfilEmail.setEnabled(esEditable);
+                binding.etPerfilPassword.setEnabled(esEditable);
+                binding.etPerfilTelefono.setEnabled(esEditable);
+
+                binding.btPerfilEditar.setVisibility(esEditable ? View.GONE : View.VISIBLE);
+                binding.btPerfilGuardar.setVisibility(esEditable ? View.VISIBLE : View.GONE);
+            }
+        });
         binding.btPerfilGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Crear Propietario
-                //Propietario p = new Propietario();
-                mv.GuardarPropietario(
-                        binding.etPerfilId.getText().toString(),
-                        binding.etPerfilDni.getText().toString(),
+                Propietario p = new Propietario(Integer.parseInt(binding.etPerfilId.getText().toString()),
+                        Long.parseLong(binding.etPerfilDni.getText().toString()),
                         binding.etPerfilNombre.getText().toString(),
                         binding.etPerfilApellido.getText().toString(),
                         binding.etPerfilEmail.getText().toString(),
                         binding.etPerfilPassword.getText().toString(),
                         binding.etPerfilTelefono.getText().toString(),
-                        propietarioActual.getAvatar()
-                );
+                        propietarioActual.getAvatar());
+                mv.GuardarPropietario(p);
+            }
+        });
+        binding.btPerfilEditar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mv.CambiarEstadoEdicion();
             }
         });
         mv.LeerUsuario();
